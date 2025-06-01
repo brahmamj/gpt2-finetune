@@ -1,0 +1,6 @@
+pyarrow==15.0.2
+datasets
+accelerate
+transformers
+PyPDF2
+clearml
