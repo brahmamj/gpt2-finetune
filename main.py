@@ -143,7 +143,7 @@ def train_model(tokenized_datasets):
     tokenizer.save_pretrained(saved_model_path)
     
 
-@PipelineDecorator.pipeline(name="GPT2 Fine-tuning Pipeline", project_name="GPT2 Fine-tuning", task_name="Fine-tune GPT2 on Bhagavad Gita")
+@PipelineDecorator.pipeline(name="GPT2 Fine-tuning Pipeline",version="1.0")
 def main():
     # Initialize ClearML task
     task = Task.init(project_name="GPT2 Fine-tuning", task_name="Fine-tune GPT2 on Bhagavad Gita")
