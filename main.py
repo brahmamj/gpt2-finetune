@@ -137,9 +137,11 @@ def train_model(tokenized_datasets):
     trainer.train()
     saved_model_path = "content/finetuned_gpt2_model"
     trainer.save_model(saved_model_path)
-
+    task = Task.current_task()
+    task.upload_artifact(name="finetuned_gpt2_model", artifact_object=saved_model_path)
     # Save the tokenizer
     tokenizer.save_pretrained(saved_model_path)
+    
 
 @PipelineDecorator.pipeline(name="GPT2 Fine-tuning Pipeline", project_name="GPT2 Fine-tuning", task_name="Fine-tune GPT2 on Bhagavad Gita")
 def main():
