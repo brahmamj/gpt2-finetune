@@ -147,7 +147,7 @@ def train_model(tokenized_datasets):
 def main():
     # Initialize ClearML task
     task = Task.init(project_name="GPT2 Fine-tuning", task_name="Fine-tune GPT2 on Bhagavad Gita")
-    task.set_base_task("gpt2_finetuning")
+    #task.set_base_task("gpt2_finetuning")
 
     # Create a ClearML dataset
     dataset = Dataset.get(dataset_project="GP2-FineTuning", dataset_name="bhagavatgeeta")
