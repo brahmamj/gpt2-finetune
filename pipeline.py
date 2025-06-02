@@ -157,7 +157,7 @@ def train_model(tokenized_datasets):
     tokenizer.save_pretrained(saved_model_path)
     
 
-@PipelineDecorator.pipeline(name="GPT-Pipeline",project="GP2-Pipeline-Proj",version="1.0",pipeline_execution_queue="default")
+@PipelineDecorator.pipeline(name="GPT-Pipeline",project="GP2-Pipeline-Proj",version="1.0",pipeline_execution_queue="default",requirements_file="requirements.txt")
 def main():
     # Initialize ClearML task
     #task = Task.init(project_name="GPT2 Fine-tuning", task_name="Fine-tune GPT2 on Bhagavad Gita")
@@ -182,5 +182,5 @@ def main():
 if __name__ == "__main__":
     #PipelineDecorator.set_default_execution_queue("default")
     #PipelineDecorator.start_locally(run_pipeline_steps_locally=False)
-
+     
     main()
