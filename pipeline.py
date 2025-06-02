@@ -9,6 +9,8 @@ from datasets import load_dataset
 from clearml import Task,Dataset
 from clearml import PipelineDecorator
 
+Task.init(project_name="Test Project", task_name="Pipeline with PyPDF2")
+Task.add_requirements("requirements.txt")
 #task = Task.init(project_name="GPT2-Finetuning", task_name="GPT2-Tune", task_type=Task.TaskTypes.optimizer)
 checkpoint = "gpt2"
 tokenizer = GPT2Tokenizer.from_pretrained(checkpoint)
