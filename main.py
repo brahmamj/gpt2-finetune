@@ -30,7 +30,7 @@ def read_pdf(pdf_path):
 
     return text  # Return the concatenated text from the PDF
 #@PipelineDecorator.component(name="Preprocess Text",cache=False,return_values=["new_text_file"])
-def preprocess_text(text):
+def preprocess_text(text_file):
     text_file = re.sub(r'\n+', '\n', text_file).strip()
     text_file = re.sub(r' +', ' ', text_file).strip()
     text_file = re.sub(r' \d+ International Gita Society', '', text_file)
