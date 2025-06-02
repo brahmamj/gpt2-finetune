@@ -31,7 +31,7 @@ def read_pdf(pdf_path):
                 text += page.extract_text()  # Extract the text from the page and append it
 
     return text  # Return the concatenated text from the PDF
-@PipelineDecorator.component(name="Preprocess Text",cache=False,return_values=["new_text_file"])
+@PipelineDecorator.component(name="Preprocess Text",cache=False,return_values=["new_text_file"],execution_queue="default")
 def preprocess_text(text_file):
     text_file = re.sub(r'\n+', '\n', text_file).strip()
     text_file = re.sub(r' +', ' ', text_file).strip()
@@ -62,7 +62,7 @@ def preprocess_text(text_file):
         # Join the remaining words and add them as the final line in the new text
         new_text_file += ' '.join(word_list) + '\n'
     return new_text_file  # Return the reformatted text with line breaks every 100 words
-@PipelineDecorator.component(name="Split Train Val Test",cache=False)
+@PipelineDecorator.component(name="Split Train Val Test",cache=False,execution_queue="default")
 def split_train_val_test(new_text_file, train_ratio=0.8, val_ratio=0.1):
     train_fraction = 0.8
     # Define the fraction of the text to be used for training.
@@ -91,7 +91,7 @@ def split_train_val_test(new_text_file, train_ratio=0.8, val_ratio=0.1):
 
      # Return the training and validation text for further processing
 
-@PipelineDecorator.component(name="Load and Tokenize Data",cache=False,return_values=["tokenized_datasets"])
+@PipelineDecorator.component(name="Load and Tokenize Data",cache=False,return_values=["tokenized_datasets"],execution_queue="default")
 def load_and_tokenize_data(train_text, val_text):
     checkpoint = "gpt2"
     tokenizer = GPT2Tokenizer.from_pretrained(checkpoint)
@@ -121,7 +121,7 @@ def load_and_tokenize_data(train_text, val_text):
 
     tokenized_datasets = dataset.map(tokenize_function, batched=True)
     return tokenized_datasets
-@PipelineDecorator.component(name="Train Model",cache=False)
+@PipelineDecorator.component(name="Train Model",cache=False,execution_queue="default")
 def train_model(tokenized_datasets):
     checkpoint = "gpt2"
     tokenizer = GPT2Tokenizer.from_pretrained(checkpoint)
