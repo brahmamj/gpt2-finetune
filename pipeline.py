@@ -88,7 +88,7 @@ def split_train_val_test(new_text_file, train_ratio=0.8, val_ratio=0.1):
         #f.write(val_text)
 
      # Return the training and validation text for further processing
-#@PipelineDecorator.component(name="Tokenize Function",cache=False,return_values=["tokenized_datasets"])
+@PipelineDecorator.component(name="Tokenize Function",cache=False,return_values=["tokenized_datasets"])
 def tokenize_function(examples):
 
     block_size=256
