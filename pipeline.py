@@ -91,6 +91,9 @@ def split_train_val_test(new_text_file, train_ratio=0.8, val_ratio=0.1):
 
 @PipelineDecorator.component(name="Load and Tokenize Data",cache=False,return_values=["tokenized_datasets"])
 def load_and_tokenize_data(train_text, val_text):
+    checkpoint = "gpt2"
+    tokenizer = GPT2Tokenizer.from_pretrained(checkpoint)
+    tokenizer.pad_token = tokenizer.unk_token
 
     def tokenize_function(examples):
 
@@ -106,9 +109,9 @@ def load_and_tokenize_data(train_text, val_text):
     #tokenizer.pad_token = tokenizer.unk_token
     train_file_path = 'train.txt'  # Path to the training text file
     val_file_path = 'val.txt'  # Path to the validation text file
-    with open(train_file_path, 'w') as f:
+    with open(train_file_path, 'w',encoding="utf-8") as f:
         f.write(train_text)
-    with open(val_file_path, 'w') as f:
+    with open(val_file_path, 'w',encoding="utf-8") as f:
         f.write(val_text)
     # Load the dataset using the Hugging Face datasets library
     dataset = load_dataset("text", data_files={"train": train_file_path,
@@ -118,6 +121,9 @@ def load_and_tokenize_data(train_text, val_text):
     return tokenized_datasets
 @PipelineDecorator.component(name="Train Model",cache=False)
 def train_model(tokenized_datasets):
+    checkpoint = "gpt2"
+    tokenizer = GPT2Tokenizer.from_pretrained(checkpoint)
+    tokenizer.pad_token = tokenizer.unk_token
     data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False, return_tensors="pt")
     model = GPT2LMHeadModel.from_pretrained(checkpoint)
     model_output_path = "content/gpt2_model"
@@ -149,7 +155,7 @@ def train_model(tokenized_datasets):
     tokenizer.save_pretrained(saved_model_path)
     
 
-@PipelineDecorator.pipeline(name="GPT-Pipeline",project="GP2-Pipeline-Proj",version="1.0")
+@PipelineDecorator.pipeline(name="GPT-Pipeline",project="GP2-Pipeline-Proj",version="1.0",pipeline_execution_queue="default")
 def main():
     # Initialize ClearML task
     #task = Task.init(project_name="GPT2 Fine-tuning", task_name="Fine-tune GPT2 on Bhagavad Gita")
@@ -172,6 +178,7 @@ def main():
     train_model(tokenized_datasets)
 
 if __name__ == "__main__":
-    PipelineDecorator.set_default_execution_queue("default")
-    PipelineDecorator.run_locally()
+    #PipelineDecorator.set_default_execution_queue("default")
+    #PipelineDecorator.start_locally(run_pipeline_steps_locally=False)
+
     main()
