@@ -146,7 +146,7 @@ def train_model(tokenized_datasets):
 @PipelineDecorator.pipeline(name="GPT2 Fine-tuning Pipeline",project="GP2-FineTuning",version="1.0")
 def main():
     # Initialize ClearML task
-    task = Task.init(project_name="GPT2 Fine-tuning", task_name="Fine-tune GPT2 on Bhagavad Gita")
+    #task = Task.init(project_name="GPT2 Fine-tuning", task_name="Fine-tune GPT2 on Bhagavad Gita")
     #task.set_base_task("gpt2_finetuning")
 
     # Create a ClearML dataset
