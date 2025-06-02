@@ -80,14 +80,15 @@ def split_train_val_test(new_text_file, train_ratio=0.8, val_ratio=0.1):
     # Extract the validation set from `new_text_file` starting from the `split_index` to the end of the text.
     # This contains the remaining 20% of the characters in the text.
     # Save the training and validation data as text files
+    return train_text, val_text
+    #with open("train.txt", "w") as f:
+        #f.write(train_text)
 
-    with open("train.txt", "w") as f:
-        f.write(train_text)
+    #with open("val.txt", "w") as f:
+        #f.write(val_text)
 
-    with open("val.txt", "w") as f:
-        f.write(val_text)
-
-@PipelineDecorator.component(name="Tokenize Function",cache=False,return_values=["tokenized_datasets"])
+     # Return the training and validation text for further processing
+#@PipelineDecorator.component(name="Tokenize Function",cache=False,return_values=["tokenized_datasets"])
 def tokenize_function(examples):
 
     block_size=256
@@ -98,13 +99,16 @@ def tokenize_function(examples):
                      max_length=block_size,      # Limit the tokenized sequences to `block_size` tokens.
                      return_tensors='pt')        # Return the tokenized output as PyTorch tensors.
 @PipelineDecorator.component(name="Load and Tokenize Data",cache=False,return_values=["tokenized_datasets"])
-def load_and_tokenize_data():
+def load_and_tokenize_data(train_text, val_text):
     #checkpoint = "gpt2"
     #tokenizer = GPT2Tokenizer.from_pretrained(checkpoint)
     #tokenizer.pad_token = tokenizer.unk_token
     train_file_path = 'train.txt'  # Path to the training text file
     val_file_path = 'val.txt'  # Path to the validation text file
-
+    with open(train_file_path, 'w') as f:
+        f.write(train_text)
+    with open(val_file_path, 'w') as f:
+        f.write(val_text)
     # Load the dataset using the Hugging Face datasets library
     dataset = load_dataset("text", data_files={"train": train_file_path,
                                            "validation": val_file_path})
@@ -158,10 +162,10 @@ def main():
     new_text_file=preprocess_text(text_file)
 
     # Split the preprocessed text into training and validation sets
-    split_train_val_test(new_text_file)
+    train_text, val_text=split_train_val_test(new_text_file)
 
     # Load and tokenize the dataset
-    tokenized_datasets = load_and_tokenize_data()
+    tokenized_datasets = load_and_tokenize_data(train_text, val_text)
 
     # Train the model
     train_model(tokenized_datasets)
