@@ -154,7 +154,7 @@ def main():
     dataset = Dataset.get(dataset_project="GP2-FineTuning", dataset_name="Bhagavatgeeta",dataset_version="1.0.0")
     local_path = dataset.get_local_copy()
     #print(f"Dataset local copy path: {local_path}")
-    text_file = read_pdf(local_path+"\document.pdf")       
+    text_file = read_pdf(local_path+"document.pdf")       
     new_text_file=preprocess_text(text_file)
 
     # Split the preprocessed text into training and validation sets
