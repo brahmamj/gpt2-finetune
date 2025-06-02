@@ -88,17 +88,19 @@ def split_train_val_test(new_text_file, train_ratio=0.8, val_ratio=0.1):
         #f.write(val_text)
 
      # Return the training and validation text for further processing
-def tokenize_function(examples):
 
-    block_size=256
+@PipelineDecorator.component(name="Load and Tokenize Data",cache=False,return_values=["tokenized_datasets"])
+def load_and_tokenize_data(train_text, val_text):
+
+    def tokenize_function(examples):
+
+        block_size=256
     # Tokenize the text using the GPT-2 tokenizer and return the tokenized input in PyTorch tensor format.
-    return tokenizer(examples["text"],
+        return tokenizer(examples["text"],
                      padding='max_length',        # Pad sequences to the maximum length (block_size).
                      truncation=True,             # Truncate sequences that exceed the maximum length.
                      max_length=block_size,      # Limit the tokenized sequences to `block_size` tokens.
                      return_tensors='pt')        # Return the tokenized output as PyTorch tensors.
-@PipelineDecorator.component(name="Load and Tokenize Data",cache=False,return_values=["tokenized_datasets"])
-def load_and_tokenize_data(train_text, val_text):
     #checkpoint = "gpt2"
     #tokenizer = GPT2Tokenizer.from_pretrained(checkpoint)
     #tokenizer.pad_token = tokenizer.unk_token
