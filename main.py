@@ -168,6 +168,7 @@ def main():
 if __name__ == "__main__":
     PipelineDecorator.set_default_execution_queue("default")
     # Run the main function 
-    main()
+    
     # Run the ClearML pipeline
     PipelineDecorator.run_pipeline("GPT2 Fine-tuning Pipeline")
+    main()
