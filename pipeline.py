@@ -157,7 +157,7 @@ def train_model(tokenized_datasets):
     tokenizer.save_pretrained(saved_model_path)
     
 
-@PipelineDecorator.pipeline(packages=[pyarrow==15.0.2,datasets,accelerate,transformers,PyPDF2,clearml], name="GPT-Pipeline",project="GP2-Pipeline-Proj",version="1.0",pipeline_execution_queue="default")
+@PipelineDecorator.pipeline(packages=['pyarrow==15.0.2','datasets','accelerate','transformers','PyPDF2','clearml'], name="GPT-Pipeline",project="GP2-Pipeline-Proj",version="1.0",pipeline_execution_queue="default")
 def main():
     # Initialize ClearML task
     #task = Task.init(project_name="GPT2 Fine-tuning", task_name="Fine-tune GPT2 on Bhagavad Gita")
