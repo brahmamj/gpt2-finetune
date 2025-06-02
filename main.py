@@ -9,6 +9,7 @@ from datasets import load_dataset
 from clearml import Task,Dataset
 from clearml import PipelineDecorator
 
+task = Task.init(project_name="GPT2-Finetuning", task_name="GPT2-Tune", task_type=Task.TaskTypes.optimizer)
 checkpoint = "gpt2"
 tokenizer = GPT2Tokenizer.from_pretrained(checkpoint)
 tokenizer.pad_token = tokenizer.unk_token
@@ -28,7 +29,7 @@ def read_pdf(pdf_path):
                 text += page.extract_text()  # Extract the text from the page and append it
 
     return text  # Return the concatenated text from the PDF
-@PipelineDecorator.component(name="Preprocess Text",cache=False,return_values=["new_text_file"])
+#@PipelineDecorator.component(name="Preprocess Text",cache=False,return_values=["new_text_file"])
 def preprocess_text(text):
     text_file = re.sub(r'\n+', '\n', text_file).strip()
     text_file = re.sub(r' +', ' ', text_file).strip()
@@ -59,7 +60,7 @@ def preprocess_text(text):
         # Join the remaining words and add them as the final line in the new text
         new_text_file += ' '.join(word_list) + '\n'
     return new_text_file  # Return the reformatted text with line breaks every 100 words
-@PipelineDecorator.component(name="Split Train Val Test",cache=False)
+#@PipelineDecorator.component(name="Split Train Val Test",cache=False)
 def split_train_val_test(new_text_file, train_ratio=0.8, val_ratio=0.1):
     train_fraction = 0.8
     # Define the fraction of the text to be used for training.
@@ -96,7 +97,7 @@ def tokenize_function(examples):
                      truncation=True,             # Truncate sequences that exceed the maximum length.
                      max_length=block_size,      # Limit the tokenized sequences to `block_size` tokens.
                      return_tensors='pt')        # Return the tokenized output as PyTorch tensors.
-@PipelineDecorator.component(name="Load and Tokenize Data",cache=False,return_values=["tokenized_datasets"])
+#@PipelineDecorator.component(name="Load and Tokenize Data",cache=False,return_values=["tokenized_datasets"])
 def load_and_tokenize_data():
     #checkpoint = "gpt2"
     #tokenizer = GPT2Tokenizer.from_pretrained(checkpoint)
@@ -110,7 +111,7 @@ def load_and_tokenize_data():
 
     tokenized_datasets = dataset.map(tokenize_function, batched=True)
     return tokenized_datasets
-@PipelineDecorator.component(name="Train Model",cache=False)
+#@PipelineDecorator.component(name="Train Model",cache=False)
 def train_model(tokenized_datasets):
     data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False, return_tensors="pt")
     model = GPT2LMHeadModel.from_pretrained(checkpoint)
@@ -143,17 +144,17 @@ def train_model(tokenized_datasets):
     tokenizer.save_pretrained(saved_model_path)
     
 
-@PipelineDecorator.pipeline(name="GPT2 Fine-tuning Pipeline",project="GP2-FineTuning",version="1.0")
+#@PipelineDecorator.pipeline(name="GPT2 Fine-tuning Pipeline",project="GP2-FineTuning",version="1.0")
 def main():
     # Initialize ClearML task
     #task = Task.init(project_name="GPT2 Fine-tuning", task_name="Fine-tune GPT2 on Bhagavad Gita")
     #task.set_base_task("gpt2_finetuning")
 
     # Create a ClearML dataset
-    dataset = Dataset.get(dataset_project="GP2-FineTuning", dataset_name="bhagavatgeeta")
-    local_path = dataset.get_local_copy()
-    print(f"Dataset local copy path: {local_path}")
-    text_file = read_pdf(local_path+"/document.pdf")       
+    #dataset = Dataset.get(dataset_project="GP2-FineTuning", dataset_name="bhagavatgeeta")
+    #local_path = dataset.get_local_copy()
+    #print(f"Dataset local copy path: {local_path}")
+    text_file = read_pdf("document.pdf")       
     new_text_file=preprocess_text(text_file)
 
     # Split the preprocessed text into training and validation sets
@@ -166,9 +167,9 @@ def main():
     train_model(tokenized_datasets)
 
 if __name__ == "__main__":
-    PipelineDecorator.set_default_execution_queue("default")
+    #PipelineDecorator.set_default_execution_queue("default")
     # Run the main function 
     
     # Run the ClearML pipeline
-    PipelineDecorator.run_pipeline("GPT2 Fine-tuning Pipeline")
+    #PipelineDecorator.run_pipeline("GPT2 Fine-tuning Pipeline")
     main()
